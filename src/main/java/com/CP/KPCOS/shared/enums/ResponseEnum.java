@@ -17,12 +17,7 @@ public enum ResponseEnum {
     EMAIL_ALREADY_EXISTS(1005, "Email already exists", HttpStatus.BAD_REQUEST),
     TOKEN_MISSING(1006, "Token is missing", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_TOKEN(1007, "Invalid token", HttpStatus.INTERNAL_SERVER_ERROR),
-
-
-
     ;
-
-
     private final int code;
 
     private final String message;

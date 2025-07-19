@@ -1,5 +1,6 @@
 package com.CP.KPCOS.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,10 @@ public class ErrorDetails {
     private String message;
     @Schema(description = "List of errors")
     private List<String> errors;
+    @Schema(description = "isSuccess")
+    private boolean isSuccess = false;
+
+
 
     public ErrorDetails(Date timestamp, int status, String path, String error, String message, List<String> errors) {
         this.timestamp = timestamp;
@@ -30,6 +35,7 @@ public class ErrorDetails {
         this.error = error;
         this.message = message;
         this.errors = errors;
+        this.isSuccess = false;
     }
     public ErrorDetails(Date timestamp, int value, String message, String tokenIsRequired) {
     }

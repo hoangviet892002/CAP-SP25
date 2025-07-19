@@ -76,4 +76,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(errorDetails);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(BAD_REQUEST)
+    @ApiResponse(responseCode = "400", description = "Bad Request",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(
+                            name = "Bad Request Response",
+                            summary = "Handle exception when a bad request is made",
+                            value = """
+                                    {
+                                      "timestamp": "2024-05-23T12:00:00.000+00:00",
+                                      "status": 400,
+                                      "path": "/api/v1/...",
+                                      "error": "Bad Request",
+                                      "message": "A bad request was made",
+                                      "errors": []
+                                    }
+                                    """
+                    )))
+    public ResponseEntity<ErrorDetails> handlingBadRequestException(BadRequestException exception, WebRequest request) {
+        log.error("Exception: ", exception);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), BAD_REQUEST.value(),
+                request.getDescription(false).replace("uri=", ""), "Bad Request", exception.getMessage(), List.of(exception.getMessage()));
+        return ResponseEntity.badRequest().body(errorDetails);
+    }
+
 }

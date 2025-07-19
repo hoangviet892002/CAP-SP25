@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -29,6 +28,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Slf4j
 @Component
@@ -86,7 +87,7 @@ public class JwtUtils {
 
 
     private String buildScope(UserEntity user) {
-        return user.getRole().getName();
+        return user.getRole();
 
     }
     private  boolean isTokenBlacklisted(String token) {
@@ -149,5 +150,86 @@ public class JwtUtils {
         redisTemplate.opsForValue().set(TOKEN_BLACKLIST_PREFIX + token, true, expiration);
     }
 
+    public String generateRefreshToken(UserEntity user) {
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(user.getUsername())
+                .issuer("com.templateredis")
+                .issueTime(new Date())
+                .expirationTime(new Date(Instant.now().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user))
+                .claim("user_id", user.getId())
+                .claim("email", user.getEmail())
+                .build();
+        return generateToken(jwtClaimsSet);
+    }
 
+    public void verifyRefreshToken(String token) throws ParseException, JOSEException {
+        verifyToken(token, true);
+    }
+
+    public String generateAccessTokenFromRefreshToken(String refreshToken) throws ParseException, JOSEException {
+        verifyRefreshToken(refreshToken);
+        SignedJWT signedJWT = SignedJWT.parse(refreshToken);
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+        Long userId = signedJWT.getJWTClaimsSet().getLongClaim("user_id");
+        String email = signedJWT.getJWTClaimsSet().getStringClaim("email");
+        String role = signedJWT.getJWTClaimsSet().getStringClaim("scope");
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setId(userId);
+        user.setEmail(email);
+        user.setRole(role);
+        return generateToken(user);
+    }
+
+    public String getUsernameFromToken(String token) throws java.text.ParseException, com.nimbusds.jose.JOSEException {
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        return signedJWT.getJWTClaimsSet().getSubject();
+    }
+
+    public String generateToken(UserEntity user, HttpServletResponse response) {
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(user.getUsername())
+                .issuer("com.templateredis")
+                .issueTime(new Date())
+                .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user))
+                .claim("user_id", user.getId())
+                .claim("email", user.getEmail())
+                .build();
+        String token = generateToken(jwtClaimsSet);
+        storeActiveToken(token);
+        if (response != null) {
+            Cookie cookie = new Cookie("accessToken", token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge((int) VALID_DURATION);
+            response.addCookie(cookie);
+        }
+        return token;
+    }
+
+    public String generateRefreshToken(UserEntity user, HttpServletResponse response) {
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(user.getUsername())
+                .issuer("com.templateredis")
+                .issueTime(new Date())
+                .expirationTime(new Date(Instant.now().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user))
+                .claim("user_id", user.getId())
+                .claim("email", user.getEmail())
+                .build();
+        String refreshToken = generateToken(jwtClaimsSet);
+        if (response != null) {
+            Cookie cookie = new Cookie("refreshToken", refreshToken);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge((int) REFRESHABLE_DURATION);
+            response.addCookie(cookie);
+        }
+        return refreshToken;
+    }
 }

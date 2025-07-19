@@ -59,27 +59,6 @@ public class JWTFilter extends OncePerRequestFilter {
                 return;
             }
         }
-            String token = request.getHeader("Authorization");
-            if (token == null || token.isEmpty()) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                ErrorDetails errorDetails = new ErrorDetails(new Date(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI(), "Bad Request", "Token is required", List.of("Token is required"));
-                ObjectMapper objectMapper = new ObjectMapper();
-                response.setContentType("application/json");
-                objectMapper.writeValue(response.getWriter(), errorDetails);
-                return;
-            }
-        try {
-            jwtUtil.verifyToken(token, false);
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            ErrorDetails errorDetails = new ErrorDetails(new Date(), HttpStatus.UNAUTHORIZED.value(), request.getRequestURI(), "Unauthorized", "Token is invalid", List.of("Token is invalid"));
-            ObjectMapper objectMapper = new ObjectMapper();
-            response.setContentType("application/json");
-            objectMapper.writeValue(response.getWriter(), errorDetails);
-            return;
-        }
-
-
         filterChain.doFilter(request, response);
     }
 }

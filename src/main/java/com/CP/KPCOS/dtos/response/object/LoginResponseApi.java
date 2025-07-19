@@ -9,6 +9,12 @@ import lombok.*;
 @Setter
 @Builder
 public class LoginResponseApi {
-    @JsonProperty("token")
-    private String token;
+    @JsonProperty("id")
+    private Long id;
+    @JsonProperty("username")
+    private String username;
+    @JsonProperty("email")
+    private String email;
+    @JsonProperty("role")
+    private String role;
 }

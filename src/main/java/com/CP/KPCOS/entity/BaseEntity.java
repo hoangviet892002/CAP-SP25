@@ -1,13 +1,10 @@
 package com.CP.KPCOS.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,8 +16,8 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")

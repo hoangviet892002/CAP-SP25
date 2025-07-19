@@ -11,10 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginRequestApi {
-
     @JsonProperty("username")
     private String username;
-
     @JsonProperty("password")
     private String password;
 
