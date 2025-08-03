@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: before-ticket-5
+      author: viet-hx
+      changes:
+        - tagDatabase:
+            tag: before-ticket-5
+  - changeSet:
+      id: add-is_sync-column-to-trello_token
+      author: viet-hx
+      changes:
+        - addColumn:
+            tableName: trello_token
+            columns:
+              - column:
+                  name: is_sync
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false

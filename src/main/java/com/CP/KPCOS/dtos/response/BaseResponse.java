@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class BaseResponse <T>{
+public class BaseResponse<T>{
     @JsonProperty("success")
     private boolean isSuccess = true;
     @JsonProperty("data")
@@ -19,4 +19,9 @@ public class BaseResponse <T>{
     public BaseResponse(T data) {
         this.data = data;
     }
+    public BaseResponse(T data, String message) {
+        this.data = data;
+        this.message = message;
+    }
+
 }

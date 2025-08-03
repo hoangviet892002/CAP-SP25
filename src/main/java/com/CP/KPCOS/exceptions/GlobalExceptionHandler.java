@@ -101,4 +101,80 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorDetails);
     }
 
+    @ExceptionHandler(ApiException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(
+                            name = "API Error Response",
+                            summary = "Handle exception when an API error occurs",
+                            value = """
+                                    {
+                                        "timestamp": "2024-05-23T12:00:00.000+00:00",
+                                        "status": 500,
+                                        "path": "/api/v1/...",
+                                        "error": "API Error",
+                                        "message": "An error occurred while processing the API request",
+                                        "errors": []
+                                        }
+                                        """
+                    )))
+    public ResponseEntity<ErrorDetails> handlingApiException(ApiException exception, WebRequest request) {
+        log.error("Exception: ", exception);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), INTERNAL_SERVER_ERROR.value(),
+                request.getDescription(false).replace("uri=", ""), "API Error", exception.getMessage(), List.of(exception.getMessage()));
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(errorDetails);
+    }
+
+    @ExceptionHandler(ApplicationExeption.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ApiResponse(responseCode = "500", description = "Internal Server Error",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(
+                            name = "Application Error Response",
+                            summary = "Handle exception when an application error occurs",
+                            value = """
+                                    {
+                                      "timestamp": "2024-05-23T12:00:00.000+00:00",
+                                      "status": 500,
+                                      "path": "/api/v1/...",
+                                      "error": "Application Error",
+                                      "message": "An application error occurred",
+                                      "errors": []
+                                    }
+                                    """
+                    )))
+    public ResponseEntity<ErrorDetails> handlingApplicationException(ApplicationExeption exception, WebRequest request) {
+        log.error("Exception: ", exception);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), INTERNAL_SERVER_ERROR.value(),
+                request.getDescription(false).replace("uri=", ""), "Application Error", exception.getMessage(), List.of(exception.getMessage()));
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(errorDetails);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    @ApiResponse(responseCode = "404", description = "Not Found",
+            content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(
+                            name = "Not Found Response",
+                            summary = "Handle exception when a resource is not found",
+                            value = """
+                                    {
+                                        "timestamp": "2024-05-23T12:00:00.000+00:00",
+                                        "status": 404,
+                                        "path": "/api/v1/...",
+                                        "error": "Not Found",
+                                        "message": "The requested resource was not found",
+                                        "errors": []
+                                        }
+                                    """
+                                    )))
+    public ResponseEntity<ErrorDetails> handlingNotFoundException(NotFoundException exception, WebRequest request) {
+        log.error("Exception: ", exception);
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), NOT_FOUND.value(),
+                request.getDescription(false).replace("uri=", ""), "Not Found", exception.getMessage(), List.of(exception.getMessage()));
+        return ResponseEntity.status(NOT_FOUND).body(errorDetails);
+    }
+
+
 }

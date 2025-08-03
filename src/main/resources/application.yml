@@ -33,9 +33,16 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
+  trello:
+    api-key: ${TRELLO_API_KEY}
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
   api-docs:
     path: /api-docs
+executor:
+  core-pool-size: 5
+  max-pool-size: 10
+  queue-capacity: 100
+  thread-name-prefix: background-job-thread

@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: before-ticket-3
+      author: viet-hx
+      changes:
+        - tagDatabase:
+            tag: before-ticket-3
+  - changeSet:
+      id: create-trello-accounts-table
+      author: viet-hx
+      changes:
+        - createTable:
+            tableName: trello_token
+            columns:
+              - column:
+                  name: trello_api_key
+                  type: VARCHAR(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_api_token
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: trello_board_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: trello_board_url
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                    name: trello_board_name
+                    type: VARCHAR(100)
+                    constraints:
+                      nullable: false
+                      primaryKey: true

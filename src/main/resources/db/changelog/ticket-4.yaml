@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: before-ticket-4
+      author: viet-hx
+      changes:
+        - tagDatabase:
+            tag: before-ticket-4
+  - changeSet:
+      id: drop-table-trello_token
+      author: viet-hx
+      changes:
+        - dropTable:
+            tableName: trello_token
+  - changeSet:
+      id: create-trello-accounts-table
+      author: viet-hx
+      changes:
+        - createTable:
+            tableName: trello_token
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT AUTO_INCREMENT
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: trello_api_token
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false

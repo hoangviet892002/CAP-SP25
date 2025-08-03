@@ -1,0 +1,91 @@
+databaseChangeLog:
+  - changeSet:
+      id: before-ticket-6
+      author: viet-hx
+      changes:
+        - tagDatabase:
+            tag: before-ticket-6
+  - changeSet:
+      id: create-trello-board-table
+      author: viet-hx
+      changes:
+        - createTable:
+            tableName: trello_board
+            columns:
+              - column:
+                  name: trello_board_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+              - column:
+                  name: url
+                  type: VARCHAR(100)
+  - changeSet:
+      id: create-trello-list-table
+      author: viet-hx
+      changes:
+        - createTable:
+            tableName: trello_list
+            columns:
+              - column:
+                  name: trello_board_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: trello_list_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+  - changeSet:
+      id: create-trello-card-table
+      author: viet-hx
+      changes:
+        - createTable:
+            tableName: trello_card
+            columns:
+              - column:
+                  name: trello_board_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: trello_list_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: trello_card_id
+                  type: varchar(100)
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+              - column:
+                  name: image
+                  type: VARCHAR(255)

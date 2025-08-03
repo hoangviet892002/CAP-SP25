@@ -41,8 +41,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public Mono<BaseResponse<UserEntity>> getCurrentUser(@CurrentUser UserEntity user) {
-        return Mono.just(new BaseResponse<>(user));
+    public Mono<BaseResponse<LoginResponseApi>> getCurrentUser(@CurrentUser UserEntity user) {
+        LoginResponseApi loginResponseApi = LoginResponseApi.toResponse(user);
+        return Mono.just(new BaseResponse<>(loginResponseApi));
     }
 
     @PostMapping("/logout")

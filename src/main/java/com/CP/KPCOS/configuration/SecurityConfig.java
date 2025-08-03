@@ -34,10 +34,11 @@ public class SecurityConfig {
             @Override
             public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
                 CorsConfiguration corsConfiguration = new CorsConfiguration();
-                corsConfiguration.setAllowedOrigins(List.of("*"));
-                corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTION"));
+                corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173")); // chỉ cho phép origin này
+                corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
                 corsConfiguration.setAllowedHeaders(Arrays.asList("authorization","content-type","x-auth-token"));
                 corsConfiguration.setExposedHeaders(List.of("x-auth-token"));
+                corsConfiguration.setAllowCredentials(true);
                 UrlBasedCorsConfigurationSource source= new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**",corsConfiguration);
                 httpSecurityCorsConfigurer.configurationSource(source);
